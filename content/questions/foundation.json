@@ -1,0 +1,164 @@
+[
+  {
+    "id": 1,
+    "level": "기초",
+    "domain": "보안 설계",
+    "question": "VPC의 가장 핵심 목적은 무엇인가?",
+    "options": [
+      "인터넷 대역폭을 자동으로 늘려 주기 위해",
+      "AWS 리소스를 논리적으로 격리된 네트워크에 배치하기 위해",
+      "EC2 인스턴스의 운영체제를 자동 업데이트하기 위해",
+      "S3 버킷을 암호화하기 위해"
+    ],
+    "answer": 1,
+    "explanation": "VPC는 네트워크 경계를 정의해 서브넷/라우팅/보안 정책을 통제하는 기반입니다.",
+    "followUpQ": "퍼블릭 서브넷과 프라이빗 서브넷을 나누는 실무적 이유는?",
+    "followUpA": "외부 노출 계층과 내부 핵심 계층을 분리해 공격면을 줄이고 정책 관리가 쉬워집니다.",
+    "stage": "stage-02-network-security",
+    "source": "pdf:concept-review"
+  },
+  {
+    "id": 2,
+    "level": "기초",
+    "domain": "비용 최적화",
+    "question": "대용량 로그 파일을 장기간 저비용으로 보관할 기본 서비스로 가장 적절한 것은?",
+    "options": [
+      "Amazon S3",
+      "Amazon EBS",
+      "Amazon ElastiCache",
+      "Amazon MQ"
+    ],
+    "answer": 0,
+    "explanation": "S3는 내구성이 높고 다양한 스토리지 클래스를 제공해 장기 보관에 적합합니다.",
+    "followUpQ": "보관 비용을 더 줄이려면 어떤 기능을 추가로 쓰나?",
+    "followUpA": "Lifecycle 정책으로 S3 Glacier 계열 클래스로 자동 전환합니다.",
+    "stage": "stage-05-cost-operations",
+    "source": "pdf:concept-review"
+  },
+  {
+    "id": 3,
+    "level": "기초",
+    "domain": "보안 설계",
+    "question": "EC2 애플리케이션이 S3에 접근할 때 권장되는 인증 방식은?",
+    "options": [
+      "코드에 Access Key를 하드코딩",
+      "IAM Role을 EC2에 연결",
+      "공용 버킷으로 전환",
+      "루트 계정 키 사용"
+    ],
+    "answer": 1,
+    "explanation": "IAM Role은 임시 자격 증명을 제공해 장기 키 관리 부담과 유출 위험을 줄입니다.",
+    "followUpQ": "Role 기반 접근에서 감사 포인트는?",
+    "followUpA": "CloudTrail로 AssumeRole 및 API 호출 이벤트를 추적하고 이상 접근을 탐지합니다.",
+    "stage": "stage-02-network-security",
+    "source": "pdf:concept-review"
+  },
+  {
+    "id": 4,
+    "level": "기초",
+    "domain": "회복탄력성",
+    "question": "RDS Multi-AZ 구성의 주된 목적은 무엇인가?",
+    "options": [
+      "읽기 성능 향상",
+      "비용 절감",
+      "고가용성 확보",
+      "스키마 자동 변경"
+    ],
+    "answer": 2,
+    "explanation": "Multi-AZ는 동기식 스탠바이와 자동 장애조치로 DB 가용성을 높입니다.",
+    "followUpQ": "읽기 트래픽이 병목이면 어떤 기능을 검토해야 하나?",
+    "followUpA": "Read Replica를 사용해 읽기 부하를 분산합니다.",
+    "stage": "stage-04-resilience-performance",
+    "source": "pdf:concept-review"
+  },
+  {
+    "id": 5,
+    "level": "기초",
+    "domain": "고성능 설계",
+    "question": "전 세계 사용자에게 정적 콘텐츠를 빠르게 제공하려면 우선적으로 고려할 서비스는?",
+    "options": [
+      "Amazon CloudFront",
+      "Amazon ECR",
+      "Amazon Inspector",
+      "AWS Glue"
+    ],
+    "answer": 0,
+    "explanation": "CloudFront는 Edge 캐시를 활용해 지연시간을 줄이고 오리진 부하를 완화합니다.",
+    "followUpQ": "CloudFront를 쓰면 보안 측면 이점은?",
+    "followUpA": "WAF 연계, TLS 종료, 오리진 직접 노출 최소화 등 보안 제어가 쉬워집니다.",
+    "stage": "stage-04-resilience-performance",
+    "source": "pdf:concept-review"
+  },
+  {
+    "id": 6,
+    "level": "기초",
+    "domain": "보안 설계",
+    "question": "Security Group에 대한 설명으로 올바른 것은?",
+    "options": [
+      "Stateless 규칙이다",
+      "인스턴스 레벨에서 동작하는 Stateful 방화벽이다",
+      "서브넷 단위에서만 동작한다",
+      "Deny 규칙을 우선 적용한다"
+    ],
+    "answer": 1,
+    "explanation": "Security Group은 상태 저장 방화벽으로 인스턴스/ENI 수준에서 허용 규칙 중심으로 동작합니다.",
+    "followUpQ": "Deny가 꼭 필요한 경우는 어디서 처리하나?",
+    "followUpA": "서브넷 레벨 NACL에서 명시적 거부 규칙을 설계할 수 있습니다.",
+    "stage": "stage-02-network-security",
+    "source": "pdf:concept-review"
+  },
+  {
+    "id": 7,
+    "level": "기초",
+    "domain": "회복탄력성",
+    "question": "마이크로서비스 간 결합도를 낮추고 트래픽 급증을 흡수하려면 어떤 구성이 적절한가?",
+    "options": [
+      "SQS 큐 도입",
+      "단일 대형 EC2로 통합",
+      "동기 REST 호출만 사용",
+      "모든 서비스 공유 DB 사용"
+    ],
+    "answer": 0,
+    "explanation": "SQS는 비동기 처리와 버퍼링을 제공해 서비스 간 장애 전파를 줄입니다.",
+    "followUpQ": "큐가 길어질 때 운영자는 무엇을 우선 봐야 하나?",
+    "followUpA": "처리 지연 시간, 가시성 타임아웃, DLQ 유입량을 함께 점검해야 합니다.",
+    "stage": "stage-04-resilience-performance",
+    "source": "pdf:concept-review"
+  },
+  {
+    "id": 8,
+    "level": "기초",
+    "domain": "회복탄력성",
+    "question": "Route 53 Health Check와 Failover 라우팅을 쓰는 주된 이유는?",
+    "options": [
+      "TLS 인증서 자동 발급",
+      "정적 웹호스팅 비용 절감",
+      "장애 엔드포인트 자동 우회",
+      "IAM 권한 관리"
+    ],
+    "answer": 2,
+    "explanation": "비정상 엔드포인트를 감지하면 대체 리전에 트래픽을 라우팅해 가용성을 높일 수 있습니다.",
+    "followUpQ": "DNS 기반 장애조치의 한계는?",
+    "followUpA": "TTL과 클라이언트 DNS 캐시 영향으로 즉시 전환이 보장되지는 않습니다.",
+    "stage": "stage-04-resilience-performance",
+    "source": "pdf:concept-review"
+  },
+  {
+    "id": 9,
+    "level": "기초",
+    "domain": "보안 설계",
+    "question": "암호화 키 접근 제어와 감사 로깅이 중요한 환경에서 주로 쓰는 서비스는?",
+    "options": [
+      "AWS KMS",
+      "AWS Budgets",
+      "Amazon GuardDuty",
+      "AWS Config"
+    ],
+    "answer": 0,
+    "explanation": "KMS는 키 정책, 권한 제어, CloudTrail 기반 감사 추적을 제공합니다.",
+    "followUpQ": "애플리케이션 계층에서 KMS를 보통 어떻게 쓰나?",
+    "followUpA": "데이터 키를 생성해 대용량 데이터 암호화(Envelope Encryption) 패턴으로 사용합니다.",
+    "stage": "stage-02-network-security",
+    "source": "pdf:concept-review"
+  }
+]

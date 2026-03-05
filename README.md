@@ -1,73 +1,88 @@
-# AWS-SAA Learning Lab
+# AWS-SAA Learning Repository
 
-AWS SAA-C03 합격을 목표로, **초보자 기초 개념부터 실전형 시나리오 문제까지** 브라우저에서 바로 학습할 수 있는 정적 웹 레포지토리입니다.
+초보자 기준으로 AWS 기초 개념부터 AWS SAA-C03 실전형 문제까지 단계적으로 학습할 수 있게 구성한 정적 웹 기반 학습 레포지토리입니다.
 
-## 목표
+## What This Repo Solves
 
-- AWS가 무엇인지부터 시작해 핵심 용어를 체계적으로 익히기
-- SAA 도메인(보안/회복탄력성/고성능/비용최적화) 기반 사고 훈련
-- 문제 풀이 + 해설 + 꼬리질문(면접형 질문)으로 응용력 강화
+- AWS를 처음 접하는 학습자도 단계별로 따라갈 수 있는 구조 제공
+- 시험형 시나리오 문제 + 꼬리질문으로 실전 답변력 강화
+- PDF/TXT 원본 자료와 학습 데이터의 연결 추적 가능
 
-## 포함 기능
-
-- `AWS 기초 소개`: 시험 관점에서 무엇을 공부해야 하는지 정리
-- `6주 로드맵`: 초보자 기준 단계별 학습 계획
-- `용어집`: 핵심 개념 + 왜 필요한지 + 꼬리질문/답변
-- `문제은행`: 기초/중급/실전 난이도 필터 + 즉시 채점
-- `모의고사`: 20문항 랜덤, 40분 타이머, 점수 및 도메인별 약점 분석
-
-## 파일 구조
+## Project Structure
 
 ```text
 .
-├── index.html
-├── assets
-│   ├── styles.css
-│   ├── data.js
-│   └── app.js
-├── README.md
-├── AWS Certified Solutions Architect Associate SAA-C03.pdf
-└── AWS SAA-03 Solution.txt
+├── web/                               # 학습 UI (정적 페이지)
+│   ├── index.html
+│   └── assets/
+│       ├── app.js
+│       └── styles.css
+├── content/                           # 프론트가 읽는 학습 데이터(JSON)
+│   ├── manifest.json
+│   ├── roadmap/stages.json
+│   ├── glossary/
+│   │   ├── foundation.json
+│   │   └── architecture.json
+│   └── questions/
+│       ├── foundation.json
+│       ├── intermediate.json
+│       ├── exam.json
+│       ├── exam_txt_drills.json
+│       └── mock_blueprint.json
+├── curriculum/                        # 단계별 학습 가이드
+│   ├── README.md
+│   ├── stage-01-foundations/README.md
+│   ├── stage-02-network-security/README.md
+│   ├── stage-03-storage-database/README.md
+│   ├── stage-04-resilience-performance/README.md
+│   ├── stage-05-cost-operations/README.md
+│   └── stage-06-exam-drills/README.md
+├── references/
+│   ├── raw/
+│   │   ├── saa-c03-source.pdf
+│   │   └── saa-c03-solution.txt
+│   ├── legacy/
+│   │   └── legacy-data.js
+│   └── indexes/
+│       ├── source-map.md
+│       ├── txt-question-index.md
+│       └── txt-drill-summary.md
+└── scripts/
+    ├── build_content_from_legacy.js
+    ├── build_txt_index.sh
+    └── build_txt_drills.py
 ```
 
-## 로컬 실행
+## Learning Flow (Recommended)
 
-정적 페이지이므로 간단한 HTTP 서버로 실행하면 됩니다.
+1. `curriculum/stage-01` ~ `stage-03`로 개념/용어 기반 학습
+2. `web` 문제은행에서 `유형(객관식/TXT 실전 드릴)` + 단계 + 난이도 필터로 문제 풀이
+3. `stage-04` ~ `stage-05`에서 설계/비용 트레이드오프 정리
+4. `stage-06` + 모의고사(20문항)로 실전 점검
+
+## Run Locally
 
 ```bash
 cd /mnt/d/aws
 python3 -m http.server 8080
 ```
 
-브라우저에서 `http://localhost:8080` 접속.
+브라우저 접속:
 
-## 학습 추천 순서
+- `http://localhost:8080/` (리다이렉트)
+- `http://localhost:8080/web/`
 
-1. `기초 섹션`으로 AWS 전체 그림 이해
-2. `용어집`에서 하루 5~10개씩 학습
-3. `문제은행`에서 난이도별 오답 노트 축적
-4. `모의고사` 반복 후 취약 도메인 보완
+## Data Maintenance
 
-## GitHub 빈 레포 연결
-
-질문에 적어주신 원격 저장소 기준 명령은 아래 순서로 사용하면 됩니다.
+기존 `references/legacy/legacy-data.js` 기반 데이터를 다시 JSON으로 분리할 때:
 
 ```bash
-git init
-git add .
-git commit -m "first commit"
-git branch -M main
-git remote add origin https://github.com/hyunseung1119/AWS-SAA.git
-git push -u origin main
+node scripts/build_content_from_legacy.js
+scripts/build_txt_index.sh
+scripts/build_txt_drills.py
 ```
 
-이미 `origin`이 있다면 아래로 갱신합니다.
+## Notes
 
-```bash
-git remote set-url origin https://github.com/hyunseung1119/AWS-SAA.git
-```
-
-## 참고
-
-- 본 레포의 문제는 학습용 재구성 문제입니다.
-- 실제 시험 합격률을 높이려면 서비스 공식 문서/Hands-on 실습을 병행하는 것이 좋습니다.
+- 본 레포 문제는 학습용 재구성 문항입니다.
+- 실제 시험 대비 시 AWS 공식 문서와 콘솔 실습을 함께 진행하세요.

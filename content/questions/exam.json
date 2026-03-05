@@ -1,0 +1,164 @@
+[
+  {
+    "id": 19,
+    "level": "실전",
+    "domain": "고성능 설계",
+    "question": "여러 대륙 지사에서 대용량 파일을 단일 S3 버킷으로 최대한 빠르게 업로드해야 한다. 운영 복잡도도 낮아야 한다. 가장 적절한 방법은?",
+    "options": [
+      "각 지사마다 Storage Gateway를 수동 구성",
+      "S3 Transfer Acceleration + Multipart Upload 사용",
+      "모든 지사 트래픽을 단일 VPN 터널로 집약",
+      "각 지사에서 먼저 EBS로 저장 후 복사"
+    ],
+    "answer": 1,
+    "explanation": "장거리 업로드 가속과 대용량 분할 업로드 조합으로 성능과 단순성을 동시에 확보합니다.",
+    "followUpQ": "Transfer Acceleration 사용 전 확인해야 할 것은?",
+    "followUpA": "추가 비용 대비 체감 성능이 있는지, 지역/네트워크 조건에서 벤치마크가 필요합니다.",
+    "stage": "stage-06-exam-drills",
+    "source": "txt:q1"
+  },
+  {
+    "id": 20,
+    "level": "실전",
+    "domain": "고성능 설계",
+    "question": "S3에 저장된 JSON 로그를 필요할 때만 SQL로 분석하고 운영 부담을 최소화하려면?",
+    "options": [
+      "EMR 상시 클러스터 운영",
+      "Athena로 S3 직접 조회",
+      "RDS로 전량 적재",
+      "EC2 배치 파서 개발"
+    ],
+    "answer": 1,
+    "explanation": "Athena는 서버리스 질의 서비스로 온디맨드 분석에 적합하며 운영 오버헤드가 낮습니다.",
+    "followUpQ": "Athena 비용을 줄이는 핵심 팁은?",
+    "followUpA": "파티셔닝과 컬럼형 포맷(Parquet 등)으로 스캔 데이터 양을 줄입니다.",
+    "stage": "stage-06-exam-drills",
+    "source": "txt:q2"
+  },
+  {
+    "id": 21,
+    "level": "실전",
+    "domain": "회복탄력성",
+    "question": "하나의 이벤트를 여러 소비자 애플리케이션이 독립적으로 처리해야 한다. 각 소비자는 실패 시 재처리도 가능해야 한다. 어떤 패턴이 적합한가?",
+    "options": [
+      "단일 SQS 큐를 공동 소비",
+      "SNS 토픽 + 소비자별 SQS 구독",
+      "모든 소비자를 동기 API 호출",
+      "단일 EC2 크론잡"
+    ],
+    "answer": 1,
+    "explanation": "SNS 팬아웃과 SQS 버퍼를 결합하면 소비자 분리, 독립 장애 처리, 재시도 전략을 동시에 만족합니다.",
+    "followUpQ": "소비자별 필터링이 필요하면 무엇을 추가하나?",
+    "followUpA": "SNS 메시지 속성과 구독 필터 정책을 사용합니다.",
+    "stage": "stage-06-exam-drills",
+    "source": "txt:q7"
+  },
+  {
+    "id": 22,
+    "level": "실전",
+    "domain": "회복탄력성",
+    "question": "작업 스케줄러와 다수 컴퓨트 노드로 구성된 레거시 시스템을 AWS로 현대화하려고 한다. 부하 변동이 크며 확장성과 복원력이 중요하다. 최적 설계는?",
+    "options": [
+      "단일 대형 EC2에 모든 작업 통합",
+      "SQS 큐 + Auto Scaling EC2 워커",
+      "NFS 공유 폴더 폴링",
+      "고정 수량 Lambda 예약 실행"
+    ],
+    "answer": 1,
+    "explanation": "큐 기반 비동기 처리와 워커 오토스케일 조합이 변동 부하 대응과 장애 분리에 효과적입니다.",
+    "followUpQ": "이 구조에서 데이터 중복 처리 방지는 어떻게 하나?",
+    "followUpA": "Idempotency 키 설계와 적절한 visibility timeout/DLQ 구성이 필요합니다.",
+    "stage": "stage-06-exam-drills",
+    "source": "txt:q8"
+  },
+  {
+    "id": 23,
+    "level": "실전",
+    "domain": "회복탄력성",
+    "question": "글로벌 사용자 대상 읽기 중심 Aurora 워크로드에서 리전 장애 시 빠른 복구가 필요하다. 운영팀 규모는 작다. 어떤 선택이 가장 현실적인가?",
+    "options": [
+      "백업 파일 수동 복원만 사용",
+      "Aurora Global Database + Route 53 Failover",
+      "매시간 수동 스냅샷 복사",
+      "단일 리전에 Read Replica만 추가"
+    ],
+    "answer": 1,
+    "explanation": "Global Database는 교차 리전 복제 지연을 낮추고 장애 조치 시간을 단축하는 데 유리합니다.",
+    "followUpQ": "DR 설계 검증에서 꼭 해야 하는 활동은?",
+    "followUpA": "정기적인 장애조치 리허설과 RTO/RPO 측정 자동화를 실행해야 합니다.",
+    "stage": "stage-06-exam-drills",
+    "source": "pdf:concept-review"
+  },
+  {
+    "id": 24,
+    "level": "실전",
+    "domain": "비용 최적화",
+    "question": "연중 지속되는 기본 트래픽과 예측 불가한 단기 피크가 함께 있는 EC2 워크로드의 비용을 줄이려면?",
+    "options": [
+      "전량 On-Demand 유지",
+      "기본 용량은 Savings Plans, 피크는 Spot 혼합",
+      "전량 Reserved Instance 3년 선결제",
+      "전량 Spot으로 전환"
+    ],
+    "answer": 1,
+    "explanation": "예측 가능한 베이스로드와 유연한 피크 워크로드를 분리해 비용과 안정성을 균형 있게 가져갈 수 있습니다.",
+    "followUpQ": "Spot 중단 대응 기본 원칙은?",
+    "followUpA": "중단 허용 워크로드만 배치하고, 체크포인트/재시도 전략을 설계해야 합니다.",
+    "stage": "stage-06-exam-drills",
+    "source": "pdf:concept-review"
+  },
+  {
+    "id": 25,
+    "level": "실전",
+    "domain": "보안 설계",
+    "question": "S3 정적 콘텐츠를 CloudFront로만 공개하고 버킷 직접 접근은 차단해야 한다. 가장 권장되는 구성은?",
+    "options": [
+      "버킷을 퍼블릭으로 열고 CloudFront 사용",
+      "CloudFront OAC(Origin Access Control) + 버킷 정책",
+      "IAM 사용자 키를 프론트엔드 코드에 포함",
+      "Route 53 정책만 설정"
+    ],
+    "answer": 1,
+    "explanation": "OAC를 사용하면 CloudFront 경유 요청만 허용하도록 안전하게 제한할 수 있습니다.",
+    "followUpQ": "과거 OAI와 비교해 OAC 장점은?",
+    "followUpA": "신규 보안 기능 및 현대적 서명 방식 지원 등 확장성이 더 좋습니다.",
+    "stage": "stage-06-exam-drills",
+    "source": "pdf:concept-review"
+  },
+  {
+    "id": 26,
+    "level": "실전",
+    "domain": "보안 설계",
+    "question": "엄격한 규제로 인해 암호화 키를 전용 HSM에서 관리해야 한다. AWS 서비스 선택은?",
+    "options": [
+      "AWS CloudHSM",
+      "AWS Cost Explorer",
+      "Amazon Macie",
+      "AWS X-Ray"
+    ],
+    "answer": 0,
+    "explanation": "CloudHSM은 고객 전용 HSM 기반 키 제어 요구사항을 충족할 때 사용됩니다.",
+    "followUpQ": "KMS만으로 충분한 경우와 CloudHSM이 필요한 경우 차이는?",
+    "followUpA": "대부분은 KMS로 충분하지만, 규정상 전용 HSM 제어가 필수면 CloudHSM을 검토합니다.",
+    "stage": "stage-06-exam-drills",
+    "source": "pdf:concept-review"
+  },
+  {
+    "id": 27,
+    "level": "실전",
+    "domain": "회복탄력성",
+    "question": "RPO 15분, RTO 1시간 요구를 가진 업무 시스템 DR 전략으로 운영복잡도를 낮추면서 목표를 맞추려면?",
+    "options": [
+      "Backup and Restore만 사용",
+      "Pilot Light 전략으로 핵심 데이터 계층 상시 유지",
+      "Multi-Site Active/Active를 무조건 도입",
+      "장애 시 새 계정 생성 후 배포"
+    ],
+    "answer": 1,
+    "explanation": "Pilot Light는 핵심 구성요소를 최소 운영해 복구 시간을 단축하면서 비용과 복잡도를 절충합니다.",
+    "followUpQ": "Warm Standby와 Pilot Light 선택 기준은?",
+    "followUpA": "복구 속도 요구가 더 빠를수록 Warm Standby가 유리하지만 비용이 증가합니다.",
+    "stage": "stage-06-exam-drills",
+    "source": "pdf:concept-review"
+  }
+]

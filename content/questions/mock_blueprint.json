@@ -1,0 +1,19 @@
+{
+  "totalQuestions": 20,
+  "timeLimitMinutes": 40,
+  "passScore": 72,
+  "distribution": [
+    {
+      "level": "기초",
+      "count": 5
+    },
+    {
+      "level": "중급",
+      "count": 6
+    },
+    {
+      "level": "실전",
+      "count": 9
+    }
+  ]
+}

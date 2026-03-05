@@ -1,0 +1,74 @@
+[
+  {
+    "term": "EFS",
+    "meaning": "여러 EC2가 동시에 마운트할 수 있는 관리형 NFS 파일 스토리지입니다.",
+    "why": "수평 확장되는 앱에서 공유 파일 영역을 단순하게 운영할 수 있습니다.",
+    "followUpQ": "EBS 대신 EFS를 쓰면 단점은?",
+    "followUpA": "일부 워크로드에서는 EBS 대비 지연시간/처리량 특성이 불리할 수 있습니다.",
+    "stage": "stage-03-storage-database",
+    "source": "pdf:concept-review"
+  },
+  {
+    "term": "RDS Multi-AZ",
+    "meaning": "기본 DB와 동기식 대기 DB를 서로 다른 AZ에 두는 고가용성 구성입니다.",
+    "why": "인프라 장애 시 자동 장애조치로 다운타임을 줄일 수 있습니다.",
+    "followUpQ": "Read Replica와 혼동되는 포인트는?",
+    "followUpA": "Read Replica는 읽기 확장 목적이고 Multi-AZ는 가용성 목적입니다.",
+    "stage": "stage-03-storage-database",
+    "source": "pdf:concept-review"
+  },
+  {
+    "term": "CloudFront",
+    "meaning": "전 세계 Edge에서 콘텐츠를 캐싱해 전달하는 CDN입니다.",
+    "why": "사용자 지연시간 감소와 오리진 부하 절감에 직접적인 효과가 있습니다.",
+    "followUpQ": "동적 API에도 의미가 있나?",
+    "followUpA": "캐싱 정책을 조정하면 일부 동적 트래픽 최적화와 TLS 오프로딩 이점이 있습니다.",
+    "stage": "stage-03-storage-database",
+    "source": "pdf:concept-review"
+  },
+  {
+    "term": "SQS",
+    "meaning": "애플리케이션 컴포넌트를 비동기로 분리하는 메시지 큐 서비스입니다.",
+    "why": "트래픽 스파이크를 흡수해 시스템 전체 안정성과 확장성을 높입니다.",
+    "followUpQ": "큐 길이 기반 오토스케일링이 중요한 이유는?",
+    "followUpA": "실제 처리 적체를 기준으로 워커 수를 조절하므로 과소/과대 확장을 줄입니다.",
+    "stage": "stage-03-storage-database",
+    "source": "pdf:concept-review"
+  },
+  {
+    "term": "SNS",
+    "meaning": "하나의 이벤트를 여러 구독자에게 팬아웃 전달하는 Pub/Sub 서비스입니다.",
+    "why": "이벤트 기반 아키텍처에서 소비자 추가를 유연하게 만들고 결합도를 낮춥니다.",
+    "followUpQ": "SNS만 쓰고 큐를 안 두면 생길 수 있는 문제는?",
+    "followUpA": "소비자 장애 시 메시지 재처리/버퍼링 유연성이 떨어질 수 있습니다.",
+    "stage": "stage-03-storage-database",
+    "source": "pdf:concept-review"
+  },
+  {
+    "term": "NAT Gateway",
+    "meaning": "프라이빗 서브넷 인스턴스가 인터넷 아웃바운드 통신을 하게 하는 관리형 게이트웨이입니다.",
+    "why": "인스턴스를 퍼블릭으로 노출하지 않고도 패치/외부 API 호출을 처리할 수 있습니다.",
+    "followUpQ": "NAT 인스턴스보다 NAT Gateway가 자주 추천되는 이유는?",
+    "followUpA": "관리 부담이 낮고 확장/가용성 구성이 단순하기 때문입니다.",
+    "stage": "stage-03-storage-database",
+    "source": "pdf:concept-review"
+  },
+  {
+    "term": "KMS",
+    "meaning": "암호화 키 생성/관리/감사를 제공하는 관리형 서비스입니다.",
+    "why": "데이터 암호화 표준화와 키 접근 통제, 감사 추적을 쉽게 구현할 수 있습니다.",
+    "followUpQ": "SSE-S3와 SSE-KMS 차이는?",
+    "followUpA": "SSE-KMS는 키 정책/감사 로깅/세밀한 권한 통제가 더 강력합니다.",
+    "stage": "stage-03-storage-database",
+    "source": "pdf:concept-review"
+  },
+  {
+    "term": "Auto Scaling",
+    "meaning": "부하 변화에 따라 인스턴스 수를 자동 조절하는 기능입니다.",
+    "why": "성능과 비용을 동시에 맞추는 핵심 메커니즘입니다.",
+    "followUpQ": "CPU만으로 스케일링하면 놓치기 쉬운 상황은?",
+    "followUpA": "비동기 처리 시스템은 CPU보다 큐 적체가 실제 병목을 더 잘 반영할 수 있습니다.",
+    "stage": "stage-03-storage-database",
+    "source": "pdf:concept-review"
+  }
+]

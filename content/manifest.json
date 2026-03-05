@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "generatedAt": "2026-03-05T01:30:06.755Z",
+  "sources": {
+    "pdf": "references/raw/saa-c03-source.pdf",
+    "txt": "references/raw/saa-c03-solution.txt"
+  },
+  "roadmap": "content/roadmap/stages.json",
+  "glossary": [
+    "content/glossary/foundation.json",
+    "content/glossary/architecture.json"
+  ],
+  "questions": [
+    "content/questions/foundation.json",
+    "content/questions/intermediate.json",
+    "content/questions/exam.json",
+    "content/questions/exam_txt_drills.json"
+  ],
+  "mockConfig": "content/questions/mock_blueprint.json"
+}

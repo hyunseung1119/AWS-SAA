@@ -1,10 +1,29 @@
-(function () {
-  const data = window.AWS_SAA_DATA || { roadmap: [], glossary: [], questions: [] };
+(async function () {
+  const data = {
+    roadmap: [],
+    glossary: [],
+    questions: [],
+    mockConfig: {
+      totalQuestions: 20,
+      timeLimitMinutes: 40,
+      passScore: 72,
+      distribution: [
+        { level: "기초", count: 5 },
+        { level: "중급", count: 6 },
+        { level: "실전", count: 9 }
+      ]
+    }
+  };
 
+  const stageMetaByPath = new Map();
+
+  const appStatus = document.getElementById("appStatus");
   const roadmapGrid = document.getElementById("roadmapGrid");
   const glossaryGrid = document.getElementById("glossaryGrid");
   const glossarySearch = document.getElementById("glossarySearch");
 
+  const practiceType = document.getElementById("practiceType");
+  const practiceStage = document.getElementById("practiceStage");
   const practiceLevel = document.getElementById("practiceLevel");
   const practiceDomain = document.getElementById("practiceDomain");
   const drawQuestionBtn = document.getElementById("drawQuestionBtn");
@@ -30,6 +49,7 @@
   const mockResult = document.getElementById("mockResult");
 
   const state = {
+    loaded: false,
     practice: {
       currentQuestion: null,
       correct: 0,
@@ -52,6 +72,84 @@
       .replace(/>/g, "&gt;")
       .replace(/\"/g, "&quot;")
       .replace(/'/g, "&#039;");
+  }
+
+  function setStatus(message, isError = false) {
+    if (!appStatus) {
+      return;
+    }
+    appStatus.textContent = message;
+    appStatus.style.color = isError ? "#b34700" : "#4f6370";
+  }
+
+  function stageLabel(stagePath) {
+    const stage = stageMetaByPath.get(stagePath);
+    if (!stage) {
+      return stagePath;
+    }
+    return `${stage.week} ${stage.title}`;
+  }
+
+  function normalizeQuestion(question) {
+    const normalized = { ...question };
+    normalized.type = normalized.type || "mcq";
+    return normalized;
+  }
+
+  function questionOrderValue(question) {
+    if (typeof question.id === "number") {
+      return question.id;
+    }
+    if (typeof question.id === "string") {
+      const txtMatch = question.id.match(/^TXT-(\d+)$/i);
+      if (txtMatch) {
+        return 100000 + Number(txtMatch[1]);
+      }
+      const asNumber = Number(question.id);
+      if (!Number.isNaN(asNumber)) {
+        return asNumber;
+      }
+    }
+    return Number.MAX_SAFE_INTEGER;
+  }
+
+  async function loadJson(relativePath) {
+    const response = await fetch(relativePath, { cache: "no-store" });
+    if (!response.ok) {
+      throw new Error(`Failed to load ${relativePath} (${response.status})`);
+    }
+    return response.json();
+  }
+
+  async function loadLearningData() {
+    const manifest = await loadJson("../content/manifest.json");
+    const roadmap = await loadJson(`../${manifest.roadmap}`);
+    const glossaryParts = await Promise.all(
+      manifest.glossary.map((filePath) => loadJson(`../${filePath}`))
+    );
+    const questionParts = await Promise.all(
+      manifest.questions.map((filePath) => loadJson(`../${filePath}`))
+    );
+
+    let mockConfig = data.mockConfig;
+    if (manifest.mockConfig) {
+      mockConfig = await loadJson(`../${manifest.mockConfig}`);
+    }
+
+    data.roadmap = roadmap;
+    data.glossary = glossaryParts.flat();
+    data.questions = questionParts
+      .flat()
+      .map(normalizeQuestion)
+      .sort((a, b) => questionOrderValue(a) - questionOrderValue(b));
+    data.mockConfig = mockConfig;
+
+    stageMetaByPath.clear();
+    data.roadmap.forEach((stage) => {
+      stageMetaByPath.set(stage.stagePath, stage);
+    });
+
+    mockTimer.textContent = formatTime(data.mockConfig.timeLimitMinutes * 60);
   }
 
   function shuffle(array) {
@@ -79,6 +177,11 @@
               ${stage.goals.map((goal) => `<li>${escapeHtml(goal)}</li>`).join("")}
             </ul>
             <p><strong>체크:</strong> ${escapeHtml(stage.check)}</p>
+            <p>
+              <a class="doc-link" href="../curriculum/${escapeHtml(stage.stagePath)}/README.md" target="_blank" rel="noopener">
+                단계 가이드 열기
+              </a>
+            </p>
           </article>
         `
       )
@@ -110,6 +213,7 @@
             <h3>${escapeHtml(item.term)}</h3>
             <p><strong>의미:</strong> ${escapeHtml(item.meaning)}</p>
             <p><strong>왜 필요:</strong> ${escapeHtml(item.why)}</p>
+            <p><span class="tag">${escapeHtml(stageLabel(item.stage))}</span><span class="tag">${escapeHtml(item.source)}</span></p>
             <div class="qa">
               <p><strong>Q.</strong> ${escapeHtml(item.followUpQ)}</p>
               <p><strong>A.</strong> ${escapeHtml(item.followUpA)}</p>
@@ -120,8 +224,17 @@
       .join("");
   }
 
-  function fillPracticeDomainFilter() {
+  function fillPracticeFilters() {
+    const stagePaths = ["전체", ...new Set(data.questions.map((q) => q.stage))];
     const domains = ["전체", ...new Set(data.questions.map((q) => q.domain))];
+
+    practiceStage.innerHTML = stagePaths
+      .map((path) => {
+        const label = path === "전체" ? path : stageLabel(path);
+        return `<option value="${escapeHtml(path)}">${escapeHtml(label)}</option>`;
+      })
+      .join("");
+
     practiceDomain.innerHTML = domains
       .map((domain) => `<option value="${escapeHtml(domain)}">${escapeHtml(domain)}</option>`)
       .join("");
@@ -132,35 +245,56 @@
   }
 
   function getPracticePool() {
+    const type = practiceType.value;
+    const stage = practiceStage.value;
     const level = practiceLevel.value;
     const domain = practiceDomain.value;
 
     return data.questions.filter((q) => {
+      const typeMatch =
+        type === "전체" || (type === "객관식" ? q.type !== "drill" : q.type === "drill");
+      const stageMatch = stage === "전체" || q.stage === stage;
       const levelMatch = level === "전체" || q.level === level;
       const domainMatch = domain === "전체" || q.domain === domain;
-      return levelMatch && domainMatch;
+      return typeMatch && stageMatch && levelMatch && domainMatch;
     });
   }
 
   function renderPracticeQuestion(question) {
     practiceCard.classList.remove("hidden");
-    practiceMeta.textContent = `${question.level} | ${question.domain} | #${question.id}`;
+    practiceMeta.textContent = `${stageLabel(question.stage)} | ${question.level} | ${question.domain} | ${question.source} | #${question.id}`;
     practiceQuestion.textContent = question.question;
-    practiceOptions.innerHTML = question.options
-      .map(
-        (option, idx) => `
-          <label>
-            <input type="radio" name="practiceOption" value="${idx}" />
-            <span>${String.fromCharCode(65 + idx)}. ${escapeHtml(option)}</span>
-          </label>
-        `
-      )
-      .join("");
+
+    if (question.type === "drill") {
+      practiceOptions.innerHTML = `
+        <p class="small-note">
+          TXT 실전 드릴입니다. 먼저 스스로 답안을 말한 뒤 <strong>답안/해설 보기</strong>를 누르세요.
+        </p>
+      `;
+      submitPracticeBtn.textContent = "답안/해설 보기";
+    } else {
+      practiceOptions.innerHTML = question.options
+        .map(
+          (option, idx) => `
+            <label>
+              <input type="radio" name="practiceOption" value="${idx}" />
+              <span>${String.fromCharCode(65 + idx)}. ${escapeHtml(option)}</span>
+            </label>
+          `
+        )
+        .join("");
+      submitPracticeBtn.textContent = "정답 확인";
+    }
+
     practiceFeedback.className = "feedback";
     practiceFeedback.textContent = "";
   }
 
   function drawPracticeQuestion() {
+    if (!state.loaded) {
+      return;
+    }
+
     const pool = getPracticePool();
     if (!pool.length) {
       practiceCard.classList.add("hidden");
@@ -176,6 +310,19 @@
   function submitPracticeAnswer() {
     const current = state.practice.currentQuestion;
     if (!current) {
+      return;
+    }
+
+    if (current.type === "drill") {
+      practiceFeedback.className = "feedback ok";
+      practiceFeedback.innerHTML = `
+        <strong>권장 답안</strong><br />
+        ${escapeHtml(current.recommendedAnswer)}<br /><br />
+        <strong>핵심 근거</strong><br />
+        ${escapeHtml(current.explanation)}<br /><br />
+        <strong>꼬리질문:</strong> ${escapeHtml(current.followUpQ)}<br />
+        <strong>답변:</strong> ${escapeHtml(current.followUpA)}
+      `;
       return;
     }
 
@@ -218,23 +365,34 @@
   }
 
   function buildMockSet() {
-    const basics = data.questions.filter((q) => q.level === "기초");
-    const mids = data.questions.filter((q) => q.level === "중급");
-    const exams = data.questions.filter((q) => q.level === "실전");
+    const mcqQuestions = data.questions.filter(
+      (q) => q.type !== "drill" && Array.isArray(q.options) && typeof q.answer === "number"
+    );
+    const totalQuestions = data.mockConfig.totalQuestions || 20;
+    const distribution = data.mockConfig.distribution || [];
+    const selected = [];
+    const usedIds = new Set();
 
-    let selected = [
-      ...pickRandom(basics, 5),
-      ...pickRandom(mids, 6),
-      ...pickRandom(exams, 9)
-    ];
+    distribution.forEach((rule) => {
+      const levelPool = mcqQuestions.filter(
+        (q) => q.level === rule.level && !usedIds.has(q.id)
+      );
+      const picked = pickRandom(levelPool, rule.count);
+      picked.forEach((question) => {
+        selected.push(question);
+        usedIds.add(question.id);
+      });
+    });
 
-    if (selected.length < 20) {
-      const usedIds = new Set(selected.map((q) => q.id));
-      const remain = data.questions.filter((q) => !usedIds.has(q.id));
-      selected = [...selected, ...pickRandom(remain, 20 - selected.length)];
+    if (selected.length < totalQuestions) {
+      const remain = mcqQuestions.filter((q) => !usedIds.has(q.id));
+      pickRandom(remain, totalQuestions - selected.length).forEach((question) => {
+        selected.push(question);
+        usedIds.add(question.id);
+      });
     }
 
-    return shuffle(selected).slice(0, 20);
+    return shuffle(selected).slice(0, totalQuestions);
   }
 
   function renderMockQuestion() {
@@ -245,7 +403,7 @@
 
     mockProgress.textContent = `문항 ${state.mock.currentIndex + 1} / ${state.mock.questions.length}`;
     mockTimer.textContent = formatTime(state.mock.remainingSec);
-    mockMeta.textContent = `${question.level} | ${question.domain} | #${question.id}`;
+    mockMeta.textContent = `${stageLabel(question.stage)} | ${question.level} | ${question.domain} | ${question.source} | #${question.id}`;
     mockQuestion.textContent = question.question;
 
     mockOptions.innerHTML = question.options
@@ -265,15 +423,24 @@
   }
 
   function startMockExam() {
+    if (!state.loaded) {
+      return;
+    }
+
     if (state.mock.timerId) {
       clearInterval(state.mock.timerId);
     }
 
     state.mock.active = true;
     state.mock.questions = buildMockSet();
+    if (!state.mock.questions.length) {
+      alert("모의고사에 사용할 객관식 문제가 없습니다.");
+      state.mock.active = false;
+      return;
+    }
     state.mock.answers = Array(state.mock.questions.length).fill(null);
     state.mock.currentIndex = 0;
-    state.mock.remainingSec = 40 * 60;
+    state.mock.remainingSec = (data.mockConfig.timeLimitMinutes || 40) * 60;
 
     mockResult.classList.add("hidden");
     mockContainer.classList.remove("hidden");
@@ -313,10 +480,7 @@
     state.mock.questions.forEach((question, idx) => {
       const picked = state.mock.answers[idx];
       if (picked !== question.answer) {
-        wrongs.push({
-          question,
-          picked
-        });
+        wrongs.push({ question, picked });
       }
     });
 
@@ -363,7 +527,8 @@
     }, 0);
 
     const score = Math.round((correct / total) * 100);
-    const passed = score >= 72;
+    const passScore = data.mockConfig.passScore || 72;
+    const passed = score >= passScore;
 
     const domainSummary = summarizeByDomain();
     const domainLines = Object.entries(domainSummary)
@@ -375,7 +540,7 @@
 
     mockResult.innerHTML = `
       <h3>${passed ? "합격권" : "보완 필요"} - ${score}% (${correct}/${total})</h3>
-      <p>기준 점수: 72%</p>
+      <p>기준 점수: ${passScore}%</p>
       <p>${domainLines}</p>
       <h4>오답 리뷰 (최대 5문항)</h4>
       ${renderWrongReviews(5)}
@@ -429,13 +594,30 @@
     });
   }
 
-  function init() {
-    renderRoadmap();
-    renderGlossary("");
-    fillPracticeDomainFilter();
-    updatePracticeScore();
+  async function init() {
     bindEvents();
+
+    try {
+      await loadLearningData();
+      state.loaded = true;
+      renderRoadmap();
+      renderGlossary("");
+      fillPracticeFilters();
+      updatePracticeScore();
+      const drillCount = data.questions.filter((question) => question.type === "drill").length;
+      const mcqCount = data.questions.filter((question) => question.type !== "drill").length;
+      setStatus(
+        `로드 완료: 용어 ${data.glossary.length}개, 문제 ${data.questions.length}개(객관식 ${mcqCount}, TXT 드릴 ${drillCount}), 모의고사 ${data.mockConfig.totalQuestions}문항`
+      );
+    } catch (error) {
+      console.error(error);
+      setStatus("데이터 로딩 실패: 로컬 서버에서 실행 중인지 확인하세요.", true);
+      drawQuestionBtn.disabled = true;
+      submitPracticeBtn.disabled = true;
+      nextPracticeBtn.disabled = true;
+      startMockBtn.disabled = true;
+    }
   }
 
-  init();
+  await init();
 })();

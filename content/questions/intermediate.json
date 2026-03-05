@@ -1,0 +1,164 @@
+[
+  {
+    "id": 10,
+    "level": "중급",
+    "domain": "회복탄력성",
+    "question": "프라이빗 서브넷 EC2가 외부 패키지 저장소에 접속해야 할 때 적절한 구성은?",
+    "options": [
+      "프라이빗 서브넷에 Internet Gateway 연결",
+      "퍼블릭 서브넷 NAT Gateway + 라우팅 설정",
+      "모든 인스턴스에 퍼블릭 IP 부여",
+      "S3 버킷 정책 수정"
+    ],
+    "answer": 1,
+    "explanation": "NAT Gateway를 통해 아웃바운드만 허용하면 프라이빗 인스턴스 노출 없이 통신 가능합니다.",
+    "followUpQ": "고가용성을 위해 NAT 구성 시 주의할 점은?",
+    "followUpA": "AZ별로 NAT Gateway를 배치하고 각 서브넷 라우팅을 같은 AZ NAT로 보내야 합니다.",
+    "stage": "stage-04-resilience-performance",
+    "source": "pdf:concept-review"
+  },
+  {
+    "id": 11,
+    "level": "중급",
+    "domain": "고성능 설계",
+    "question": "HTTP/HTTPS 웹 트래픽 L7 라우팅이 필요할 때 로드밸런서 선택은?",
+    "options": [
+      "Network Load Balancer",
+      "Gateway Load Balancer",
+      "Application Load Balancer",
+      "Classic VPN"
+    ],
+    "answer": 2,
+    "explanation": "ALB는 경로/호스트 기반 라우팅 등 L7 기능을 제공합니다.",
+    "followUpQ": "NLB가 더 적합한 경우는?",
+    "followUpA": "초저지연 L4 처리나 고정 IP, TCP/UDP 기반 워크로드에서 유리합니다.",
+    "stage": "stage-04-resilience-performance",
+    "source": "pdf:concept-review"
+  },
+  {
+    "id": 12,
+    "level": "중급",
+    "domain": "회복탄력성",
+    "question": "SQS 큐를 소비하는 워커의 Auto Scaling 지표로 가장 적합한 것은?",
+    "options": [
+      "CPU 사용률만 사용",
+      "네트워크 송신량",
+      "큐 메시지 수(Queue Depth)",
+      "루트 볼륨 크기"
+    ],
+    "answer": 2,
+    "explanation": "큐 적체량은 처리 병목을 직접 반영하므로 비동기 워커 스케일링에 유효합니다.",
+    "followUpQ": "CPU 지표만 쓰면 어떤 문제가 생기나?",
+    "followUpA": "메시지가 계속 쌓여도 CPU가 낮게 보이면 확장이 지연될 수 있습니다.",
+    "stage": "stage-04-resilience-performance",
+    "source": "pdf:concept-review"
+  },
+  {
+    "id": 13,
+    "level": "중급",
+    "domain": "비용 최적화",
+    "question": "트래픽 패턴 예측이 어려운 DynamoDB 워크로드의 기본 과금 모드로 적합한 것은?",
+    "options": [
+      "Provisioned + 고정 용량",
+      "On-Demand Capacity",
+      "Reserved Queue",
+      "Dedicated Host"
+    ],
+    "answer": 1,
+    "explanation": "On-Demand는 급격한 변동 트래픽에서도 용량 계획 부담을 줄입니다.",
+    "followUpQ": "Provisioned 모드가 더 유리한 상황은?",
+    "followUpA": "트래픽이 안정적이고 장기 예측 가능하면 비용 효율이 좋아질 수 있습니다.",
+    "stage": "stage-05-cost-operations",
+    "source": "pdf:concept-review"
+  },
+  {
+    "id": 14,
+    "level": "중급",
+    "domain": "비용 최적화",
+    "question": "S3 로그 데이터를 30일 후 저비용 계층으로 자동 전환하려면?",
+    "options": [
+      "S3 Versioning",
+      "S3 Lifecycle Rule",
+      "S3 Inventory",
+      "S3 Batch Operations"
+    ],
+    "answer": 1,
+    "explanation": "Lifecycle 규칙으로 스토리지 클래스 전환 및 만료를 자동화할 수 있습니다.",
+    "followUpQ": "수명주기 정책 설계에서 흔한 실수는?",
+    "followUpA": "복구 지연 시간 요구를 확인하지 않고 너무 저렴한 클래스로 일괄 이동하는 것입니다.",
+    "stage": "stage-05-cost-operations",
+    "source": "pdf:concept-review"
+  },
+  {
+    "id": 15,
+    "level": "중급",
+    "domain": "보안 설계",
+    "question": "여러 AWS 계정에서 공통 보안 가드레일을 강제하려면 무엇을 사용해야 하는가?",
+    "options": [
+      "SCP(Service Control Policies)",
+      "로컬 crontab",
+      "CloudFront Function",
+      "EBS Snapshot"
+    ],
+    "answer": 0,
+    "explanation": "Organizations의 SCP는 계정/OU 단위로 허용 가능한 API 경계를 제어합니다.",
+    "followUpQ": "SCP와 IAM 정책 관계를 한 문장으로 요약하면?",
+    "followUpA": "SCP는 최대 권한 경계, IAM 정책은 그 안에서 실제 권한을 부여합니다.",
+    "stage": "stage-02-network-security",
+    "source": "pdf:concept-review"
+  },
+  {
+    "id": 16,
+    "level": "중급",
+    "domain": "고성능 설계",
+    "question": "여러 EC2 인스턴스가 동일한 파일을 동시에 읽고 써야 할 때 적절한 저장소는?",
+    "options": [
+      "Amazon EBS",
+      "Amazon EFS",
+      "Instance Store",
+      "Amazon SQS"
+    ],
+    "answer": 1,
+    "explanation": "EFS는 다중 인스턴스 공유 파일시스템 요구를 관리형으로 충족합니다.",
+    "followUpQ": "컨테이너 환경에서 EFS를 쓰는 대표 장점은?",
+    "followUpA": "태스크 재배치 후에도 상태 파일을 지속적으로 공유할 수 있습니다.",
+    "stage": "stage-04-resilience-performance",
+    "source": "pdf:concept-review"
+  },
+  {
+    "id": 17,
+    "level": "중급",
+    "domain": "보안 설계",
+    "question": "애플리케이션 DB 비밀번호를 주기적으로 자동 교체해야 할 때 가장 적합한 서비스는?",
+    "options": [
+      "AWS Secrets Manager",
+      "EC2 User Data",
+      "IAM Access Analyzer",
+      "AWS Artifact"
+    ],
+    "answer": 0,
+    "explanation": "Secrets Manager는 비밀값 저장, 접근 제어, 자동 로테이션을 통합 제공합니다.",
+    "followUpQ": "Parameter Store 대비 Secrets Manager 강점은?",
+    "followUpA": "관리형 회전 워크플로와 비밀관리 특화 기능이 더 풍부합니다.",
+    "stage": "stage-02-network-security",
+    "source": "pdf:concept-review"
+  },
+  {
+    "id": 18,
+    "level": "중급",
+    "domain": "회복탄력성",
+    "question": "다수 VPC와 온프레미스 네트워크를 중앙에서 단순 연결하려면 어떤 서비스가 적절한가?",
+    "options": [
+      "VPC Peering만 반복",
+      "AWS Transit Gateway",
+      "NAT Gateway",
+      "AWS WAF"
+    ],
+    "answer": 1,
+    "explanation": "Transit Gateway는 허브 앤 스포크 방식으로 다수 네트워크 연결 복잡도를 줄입니다.",
+    "followUpQ": "Peering을 계속 늘리는 방식의 문제는?",
+    "followUpA": "연결 수가 증가할수록 라우팅/운영 복잡도가 급격히 커집니다.",
+    "stage": "stage-04-resilience-performance",
+    "source": "pdf:concept-review"
+  }
+]

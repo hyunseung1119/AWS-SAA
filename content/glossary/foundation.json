@@ -1,0 +1,74 @@
+[
+  {
+    "term": "Region",
+    "meaning": "AWS 리소스를 배치하는 지리적으로 분리된 물리적 영역입니다.",
+    "why": "지연시간, 데이터 주권, 재해복구 전략은 Region 선택에서 시작됩니다.",
+    "followUpQ": "Multi-Region이 항상 정답은 아닌 이유는?",
+    "followUpA": "운영 복잡도와 데이터 동기화 비용이 크게 증가하므로 요구사항 기반으로만 선택합니다.",
+    "stage": "stage-01-foundations",
+    "source": "pdf:concept-review"
+  },
+  {
+    "term": "Availability Zone (AZ)",
+    "meaning": "하나의 Region 안에 있는 독립 전원/네트워크를 가진 데이터센터 묶음입니다.",
+    "why": "AZ 분산은 단일 데이터센터 장애를 흡수하는 가장 기본적인 고가용성 패턴입니다.",
+    "followUpQ": "Multi-AZ와 Backup의 차이는?",
+    "followUpA": "Multi-AZ는 고가용성(자동 장애조치), Backup은 데이터 복구 목적입니다.",
+    "stage": "stage-01-foundations",
+    "source": "pdf:concept-review"
+  },
+  {
+    "term": "VPC",
+    "meaning": "AWS에서 논리적으로 격리된 가상 네트워크입니다.",
+    "why": "네트워크 경계와 라우팅 정책을 직접 통제해야 보안/확장 설계가 가능합니다.",
+    "followUpQ": "초보자가 가장 자주 실수하는 포인트는?",
+    "followUpA": "서브넷은 IGW에 직접 연결되지 않고 라우팅 테이블로 경로를 지정해야 합니다.",
+    "stage": "stage-01-foundations",
+    "source": "pdf:concept-review"
+  },
+  {
+    "term": "Security Group",
+    "meaning": "인스턴스/ENI 단위의 상태 저장(Stateful) 방화벽입니다.",
+    "why": "워크로드별 최소 허용 정책으로 공격면을 줄일 수 있습니다.",
+    "followUpQ": "Stateful이면 어떤 점이 쉬워지나?",
+    "followUpA": "인바운드 허용 시 응답 트래픽 아웃바운드는 별도 허용 규칙이 필요 없습니다.",
+    "stage": "stage-01-foundations",
+    "source": "pdf:concept-review"
+  },
+  {
+    "term": "NACL",
+    "meaning": "서브넷 단위의 상태 비저장(Stateless) 네트워크 필터입니다.",
+    "why": "서브넷 레벨 차단 정책이 필요할 때 SG와 계층적으로 사용합니다.",
+    "followUpQ": "SG만으로 충분하지 않은 경우는?",
+    "followUpA": "특정 IP 대역을 서브넷 전역에서 명시적으로 거부해야 할 때 NACL이 유용합니다.",
+    "stage": "stage-01-foundations",
+    "source": "pdf:concept-review"
+  },
+  {
+    "term": "IAM Role",
+    "meaning": "장기 액세스 키 없이 임시 자격 증명을 제공하는 권한 엔티티입니다.",
+    "why": "키 하드코딩을 막고 회전 부담을 줄여 보안 사고를 예방합니다.",
+    "followUpQ": "EC2에서 IAM User 대신 Role을 쓰는 이유는?",
+    "followUpA": "Role은 자동 갱신되는 임시 자격 증명을 사용하므로 키 유출 리스크가 낮습니다.",
+    "stage": "stage-01-foundations",
+    "source": "pdf:concept-review"
+  },
+  {
+    "term": "S3",
+    "meaning": "확장성과 내구성이 높은 객체 스토리지 서비스입니다.",
+    "why": "로그/백업/정적 콘텐츠/데이터레이크 등 광범위한 워크로드의 기본 저장소입니다.",
+    "followUpQ": "S3에 파일시스템처럼 랜덤 쓰기가 가능한가?",
+    "followUpA": "아니요. 객체 단위로 저장되므로 수정은 보통 객체 재업로드 패턴을 사용합니다.",
+    "stage": "stage-01-foundations",
+    "source": "pdf:concept-review"
+  },
+  {
+    "term": "EBS",
+    "meaning": "EC2에 연결하는 블록 스토리지 볼륨입니다.",
+    "why": "데이터베이스처럼 저지연 블록 스토리지가 필요한 워크로드에 적합합니다.",
+    "followUpQ": "EBS를 여러 인스턴스가 동시에 공유 가능한가?",
+    "followUpA": "일반적으로 단일 인스턴스 연결이 기본이며, 공유 파일이 필요하면 EFS를 검토합니다.",
+    "stage": "stage-01-foundations",
+    "source": "pdf:concept-review"
+  }
+]
