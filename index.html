@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AWS SAA Learning Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body>
+    <div class="ambient"></div>
+    <header class="site-header">
+      <div class="brand">
+        <p class="brand-kicker">Beginner to Exam-Level</p>
+        <h1>AWS SAA Learning Lab</h1>
+      </div>
+      <nav>
+        <a href="#intro">기초</a>
+        <a href="#roadmap">로드맵</a>
+        <a href="#glossary">용어집</a>
+        <a href="#practice">문제은행</a>
+        <a href="#mock">모의고사</a>
+      </nav>
+    </header>
+
+    <main>
+      <section id="intro" class="panel hero">
+        <div>
+          <p class="kicker">AWS란?</p>
+          <h2>클라우드 인프라를 직접 조립하지 않고, 서비스 형태로 쓰는 방식</h2>
+          <p>
+            AWS는 서버, 데이터베이스, 네트워크, 보안 기능을 필요할 때 바로 사용하는
+            클라우드 플랫폼입니다. AWS SAA는 "요구사항(가용성, 성능, 보안, 비용)에 맞는
+            아키텍처를 설계할 수 있는지"를 검증합니다.
+          </p>
+        </div>
+        <div class="hero-grid">
+          <article>
+            <h3>왜 필요한가</h3>
+            <p>서비스 확장, 장애 복구, 보안 설계를 표준화하고 빠르게 구현할 수 있습니다.</p>
+          </article>
+          <article>
+            <h3>SAA 핵심</h3>
+            <p>단일 서비스 암기가 아니라 "트레이드오프 판단"이 핵심입니다.</p>
+          </article>
+          <article>
+            <h3>학습 방식</h3>
+            <p>개념 → 용어 → 시나리오 문제 → 꼬리질문 순으로 반복 학습합니다.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel">
+        <p class="kicker">시험 포인트</p>
+        <h2>SAA-C03 도메인별 관점</h2>
+        <div class="domain-grid">
+          <article>
+            <h3>보안 설계</h3>
+            <p>IAM 최소 권한, 네트워크 경계, 데이터 암호화, 비밀정보 관리</p>
+          </article>
+          <article>
+            <h3>회복탄력성</h3>
+            <p>Multi-AZ, 백업, 장애조치, 느슨한 결합, 재시도/큐잉 전략</p>
+          </article>
+          <article>
+            <h3>고성능 설계</h3>
+            <p>캐시, CDN, 오토스케일링, 데이터 액세스 패턴 최적화</p>
+          </article>
+          <article>
+            <h3>비용 최적화</h3>
+            <p>요금 모델 선택, 데이터 수명주기, 관리형 서비스 우선</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="roadmap" class="panel">
+        <p class="kicker">Step by Step</p>
+        <h2>초보자용 6단계 학습 로드맵</h2>
+        <div id="roadmapGrid" class="roadmap-grid"></div>
+      </section>
+
+      <section id="glossary" class="panel">
+        <div class="section-head">
+          <div>
+            <p class="kicker">Glossary</p>
+            <h2>AWS 시험 핵심 용어 + 왜 필요한지</h2>
+          </div>
+          <label class="search-box">
+            <span>검색</span>
+            <input
+              id="glossarySearch"
+              type="search"
+              placeholder="예: S3, IAM, NAT, Multi-AZ"
+              autocomplete="off"
+            />
+          </label>
+        </div>
+        <p class="small-note">
+          카드마다 꼬리질문(Q)과 답변(A)을 넣었습니다. 면접/구술 대비에 그대로 활용할 수
+          있습니다.
+        </p>
+        <div id="glossaryGrid" class="glossary-grid"></div>
+      </section>
+
+      <section id="practice" class="panel">
+        <p class="kicker">Question Bank</p>
+        <h2>난이도별 문제 학습 (기초 → 중급 → 실전)</h2>
+        <div class="controls">
+          <label>
+            난이도
+            <select id="practiceLevel">
+              <option value="전체">전체</option>
+              <option value="기초">기초</option>
+              <option value="중급">중급</option>
+              <option value="실전">실전</option>
+            </select>
+          </label>
+          <label>
+            도메인
+            <select id="practiceDomain">
+              <option value="전체">전체</option>
+            </select>
+          </label>
+          <button id="drawQuestionBtn" type="button">문제 뽑기</button>
+        </div>
+        <div class="score-strip" id="practiceScore">정답 0 | 오답 0</div>
+        <article id="practiceCard" class="question-card hidden">
+          <div class="question-meta" id="practiceMeta"></div>
+          <h3 id="practiceQuestion"></h3>
+          <form id="practiceOptions" class="options"></form>
+          <div class="actions">
+            <button id="submitPracticeBtn" type="button">정답 확인</button>
+            <button id="nextPracticeBtn" type="button">다른 문제</button>
+          </div>
+          <div id="practiceFeedback" class="feedback"></div>
+        </article>
+      </section>
+
+      <section id="mock" class="panel">
+        <p class="kicker">Mock Exam</p>
+        <h2>실전 감각 모의고사 (20문항)</h2>
+        <div class="mock-intro">
+          <p>
+            20문항, 제한시간 40분. 정답률 72% 이상을 목표로 하세요. 제출 후 영역별 취약점을
+            확인할 수 있습니다.
+          </p>
+          <button id="startMockBtn" type="button">모의고사 시작</button>
+        </div>
+
+        <div id="mockContainer" class="mock-container hidden">
+          <div class="mock-head">
+            <p id="mockProgress"></p>
+            <p id="mockTimer" class="timer">40:00</p>
+          </div>
+          <article class="question-card">
+            <div class="question-meta" id="mockMeta"></div>
+            <h3 id="mockQuestion"></h3>
+            <form id="mockOptions" class="options"></form>
+          </article>
+          <div class="actions">
+            <button id="mockPrevBtn" type="button">이전</button>
+            <button id="mockNextBtn" type="button">다음</button>
+            <button id="submitMockBtn" type="button">최종 제출</button>
+          </div>
+        </div>
+
+        <div id="mockResult" class="result hidden"></div>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        학습 목적 샘플 콘텐츠입니다. 실제 시험 문항 유출본이 아닌, SAA 스타일에 맞춘
+        재구성 문제로 구성했습니다.
+      </p>
+    </footer>
+
+    <script src="assets/data.js"></script>
+    <script src="assets/app.js"></script>
+  </body>
+</html>
